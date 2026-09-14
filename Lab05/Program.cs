@@ -58,12 +58,34 @@ namespace Lab05
             Console.WriteLine($"Monster Counter Attack deal: {counterDamage} DMG");
 
             // คำนวณ Cri Chance
-            Random rng = new Random();
+            Random rng = new Random(14);
             int roll = rng.Next(1, 101); // Random Cri 1-100
             bool isCrit = roll <= 10; // 10%
             int critDamage = normalDamage + Convert.ToInt32(isCrit) * normalDamage; // โอกาส 10% ติดคริ เลขได้1 ไม่ติดได้ 0
             Console.WriteLine($"Critial hit roll: {roll} (critical: {isCrit})");
             Console.WriteLine($"Normal Attack would deal Critical: {critDamage} DMG");
+
+            bool heroHitsHarder = heroAtk > monsterAtk;
+            bool canOneShotWithNormal = normalDamage >= monsterHp;
+            bool monsterCanOneShotHero = counterDamage >= heroHp;
+            bool safeTrade = normalDamage > counterDamage && !monsterCanOneShotHero;
+            bool luckyOrLethal = isCrit || canOneShotWithNormal;
+            Console.WriteLine($"Hero hits harder than Monster: {heroHitsHarder}");
+            Console.WriteLine($"Normal Attack can defeat Monster in one hit: {canOneShotWithNormal}");
+            Console.WriteLine($"Monster could defeat Hero in one hit back: {monsterCanOneShotHero}");
+            Console.WriteLine($"This is a safe trade for Hero: {safeTrade}");
+            Console.WriteLine($"This attack is lucky or lethal: {luckyOrLethal}");
+
+            int monsterMaxHp = monsterHp;
+            // Hero commits to the Normal Attack (compound assignment: -=)
+            monsterHp -= normalDamage;
+            Console.WriteLine($"Hero attacks! Monster HP: {monsterHp}/{monsterMaxHp}");
+
+            // Result + reward
+            bool monsterDefeated = monsterHp <= 0;
+            int goldEarned = (monsterMaxHp - monsterHp) * 2;
+            Console.WriteLine($"Monster defeated: {monsterDefeated}");
+            Console.WriteLine($"Gold earned: {goldEarned}");
         }
     }
 }
